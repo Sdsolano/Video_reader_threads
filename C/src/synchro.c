@@ -16,9 +16,7 @@ int texture_count = 0;
 
 pthread_mutex_t mutex_hashmap = PTHREAD_MUTEX_INITIALIZER;
 
-/* l'implantation des fonctions de synchro ici */
 void envoiTailleFenetre(th_ycbcr_buffer buffer) {
-    printf("Sending window size: %dx%d\n", buffer[0].width, buffer[0].height);
     pthread_mutex_lock(&mutex_window);
     windowsx = buffer[0].width;
     windowsy = buffer[0].height;
@@ -28,13 +26,11 @@ void envoiTailleFenetre(th_ycbcr_buffer buffer) {
 }
 
 void attendreTailleFenetre() {
-    printf("Waiting for window size\n");
     pthread_mutex_lock(&mutex_window);
     while (!window_size_received) {
         pthread_cond_wait(&cond_window_size, &mutex_window);
     }
     pthread_mutex_unlock(&mutex_window);
-    printf("Got window size: %dx%d\n", windowsx, windowsy);
 }
 
 void signalerFenetreEtTexturePrete() {
@@ -42,7 +38,6 @@ void signalerFenetreEtTexturePrete() {
     window_ready = true;
     pthread_cond_broadcast(&cond_window_ready);
     pthread_mutex_unlock(&mutex_window);
-    printf("Window and texture ready signaled\n");
 }
 
 void attendreFenetreTexture() {
@@ -51,31 +46,34 @@ void attendreFenetreTexture() {
         pthread_cond_wait(&cond_window_ready, &mutex_window);
     }
     pthread_mutex_unlock(&mutex_window);
-    printf("Window texture ready received\n");
 }
 
 void debutConsommerTexture() {
     pthread_mutex_lock(&mutex_texture);
     while (texture_count == 0) {
-        pthread_cond_wait(&cond_texture_full, &mutex_texture);  // changed to full
+        pthread_cond_wait(&cond_texture_full, &mutex_texture);
     }
+    pthread_mutex_unlock(&mutex_texture);
 }
 
 void finConsommerTexture() {
+    pthread_mutex_lock(&mutex_texture);
     texture_count--;
-    pthread_cond_signal(&cond_texture_empty);  // We signal that there is a free texture
+    pthread_cond_signal(&cond_texture_empty);
     pthread_mutex_unlock(&mutex_texture);
 }
 
 void debutDeposerTexture() {
     pthread_mutex_lock(&mutex_texture);
     while (texture_count >= NBTEX) {
-        pthread_cond_wait(&cond_texture_empty, &mutex_texture);  // Wait for an empty texture
+        pthread_cond_wait(&cond_texture_empty, &mutex_texture);
     }
+    pthread_mutex_unlock(&mutex_texture);
 }
 
 void finDeposerTexture() {
+    pthread_mutex_lock(&mutex_texture);
     texture_count++;
-    pthread_cond_signal(&cond_texture_full);  // Signal that there is a full texture
+    pthread_cond_signal(&cond_texture_full);
     pthread_mutex_unlock(&mutex_texture);
 }

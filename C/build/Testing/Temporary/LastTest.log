@@ -1,20 +1,18 @@
-Start testing: Dec 01 07:39 CET
+Start testing: Dec 04 19:04 CET
 ----------------------------------------------------------
 1/1 Testing: CommonPthreadError
 1/1 Test: CommonPthreadError
 Command: "/usr/bin/perl" "/home/oem/Documents/SEPC/tp3/ensimag-video/C/tests/pthcocci.pl"
 Directory: /home/oem/Video_reader_threads/C/build
-"CommonPthreadError" start time: Dec 01 07:39 CET
+"CommonPthreadError" start time: Dec 04 19:04 CET
 Output:
 ----------------------------------------------------------
-sh: 1: spatch: not found
-Can't exec "spatch": No such file or directory at /home/oem/Documents/SEPC/tp3/ensimag-video/C/tests/pthcocci.pl line 17.
 <end of output>
-Test time =   0.01 sec
+Test time =   0.17 sec
 ----------------------------------------------------------
 Test Passed.
-"CommonPthreadError" end time: Dec 01 07:39 CET
+"CommonPthreadError" end time: Dec 04 19:04 CET
 "CommonPthreadError" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: Dec 01 07:39 CET
+End testing: Dec 04 19:04 CET
